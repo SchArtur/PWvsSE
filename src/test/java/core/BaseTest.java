@@ -23,11 +23,14 @@ public class BaseTest {
      */
     @BeforeClass
     public void setUp() {
+        // чтение флага headless из системного свойства (по умолчанию true)
+        boolean headless = Boolean.parseBoolean(System.getProperty("headless", "true"));
+
         //инициализация браузера с настройками
         browser = Playwright
                 .create()
                 .chromium()
-                .launch(new BrowserType.LaunchOptions().setHeadless(false).setChannel("chrome"));
+                .launch(new BrowserType.LaunchOptions().setHeadless(headless).setChannel("chrome"));
 
         //создаем контекст для браузера
         context = browser.newContext();

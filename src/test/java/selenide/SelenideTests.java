@@ -13,8 +13,8 @@ import org.testng.annotations.Test;
 import java.util.List;
 
 import static com.codeborne.selenide.Selenide.*;
-import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotEquals;
+import static org.testng.AssertJUnit.assertEquals;
 
 public class SelenideTests {
     @BeforeClass
@@ -22,12 +22,14 @@ public class SelenideTests {
         Configuration.proxyEnabled = true;
         Configuration.browser = "chrome";
         Configuration.timeout = 20000;
+        Configuration.baseUrl = "https://datatables.net/examples/api/form.html";
+
     }
 
     @Test
     public void fillManyTextSelenideBoxes(){
-        Selenide.open("https://datatables.net/examples/api/form.html");
-        $x("//select[@name='example_length']").selectOption("50");
+        open("https://datatables.net/examples/api/form.html");
+        $x("//select[@class='dt-input']").selectOption("50");
         ElementsCollection textFields = $$x("//tbody//input[@type='text']");
         textFields.asFixedIterable().forEach(x->{
             x.clear();

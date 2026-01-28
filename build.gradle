@@ -6,6 +6,11 @@ plugins {
 group 'org.example'
 version '1.0-SNAPSHOT'
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
 repositories {
     mavenCentral()
 }
@@ -14,12 +19,38 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
     implementation 'com.microsoft.playwright:playwright:1.28.1'
+    implementation 'com.codeborne:selenide:7.5.1'
+    implementation 'com.codeborne:selenide-proxy:6.11.0'
     testImplementation 'org.testng:testng:7.3.0'
+    
+    // Selenium WebDriver
+    implementation 'org.seleniumhq.selenium:selenium-java:4.15.0'
+    implementation 'org.seleniumhq.selenium:selenium-chrome-driver:4.15.0'
+    implementation 'io.github.bonigarcia:webdrivermanager:5.6.2'
 
-    testImplementation 'com.codeborne:selenide:6.11.0'
-    testImplementation 'com.codeborne:selenide-proxy:6.11.0'
 }
 
 test {
     useTestNG()
+    // Настройки для параллельного запуска (опционально)
+    // maxParallelForks = 5
+    // forkEvery = 1
+}
+
+// Задача для запуска параллельных тестов 100 раз
+task testParallel(type: Test) {
+    useTestNG() {
+        suites 'src/test/resources/testng-parallel.xml'
+    }
+    maxParallelForks = 5
+}
+
+// Задача для запуска через Selenoid
+task testSelenoid(type: Test) {
+    useTestNG() {
+        includeGroups 'selenoid'
+    }
+    systemProperty 'selenoid.url', System.getProperty('selenoid.url', 'http://selenoid.autotests.cloud:4444/wd/hub')
+    systemProperty 'browser.version', System.getProperty('browser.version', 'latest')
+    maxParallelForks = 5
 }
